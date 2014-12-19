@@ -6,12 +6,16 @@
 package com.cayden.countdown.view;
 
 
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 
 import com.cayden.countdown.Constants;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -40,6 +44,9 @@ public class CountDownView extends SurfaceView implements Runnable, Callback,Con
     private ArrayList<int[][]> list=new ArrayList<int[][]>();
    
 
+    private static final String END="2014-12-20 00:00:00";
+    private Date endDate=null;
+    private long curShowTimeSeconds=0;
 	public CountDownView(Context context) {
 		super(context);
 		  mHolder = this.getHolder();    	//获得SurfaceHolder对象
@@ -48,19 +55,15 @@ public class CountDownView extends SurfaceView implements Runnable, Callback,Con
 	      mPaint.setColor(Color.BLUE);   	//设置画笔的颜色
 
 	
-	      list.add(data0);
-	      list.add(data1);
-	      list.add(data2);
-	      list.add(data3);
-	      list.add(data4);
-	      list.add(data5);
-	      list.add(data6);
-	      list.add(data7);
-	      list.add(data8);
-	      list.add(data9);
-	      list.add(data10);
 	}
 
+	private long getCurrentShowTimeSeconds() {
+		Date curTime = new Date();
+	    long ret = endDate.getTime() - curTime.getTime();
+	    ret =Math.round( ret/1000 );
+
+	    return ret >= 0 ? ret : 0;
+	}
 	@Override
 	public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
 		
@@ -77,11 +80,39 @@ public class CountDownView extends SurfaceView implements Runnable, Callback,Con
 	public void surfaceDestroyed(SurfaceHolder arg0) {
 		
 	}
-
+	@SuppressLint("SimpleDateFormat")
+	public  Date strToDateLong(String strDate)
+	{
+		if("".equals(strDate)||null==strDate){
+			return null;
+		}
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		ParsePosition pos = new ParsePosition(0);
+		Date strtodate = formatter.parse(strDate, pos);
+		return strtodate;
+	}
 	@Override
 	public void run() {
 		try{
-			mDraw();
+
+		      list.add(data0);
+		      list.add(data1);
+		      list.add(data2);
+		      list.add(data3);
+		      list.add(data4);
+		      list.add(data5);
+		      list.add(data6);
+		      list.add(data7);
+		      list.add(data8);
+		      list.add(data9);
+		      list.add(data10);
+		      endDate=strToDateLong(END);
+		      while(true){
+		    	  curShowTimeSeconds=getCurrentShowTimeSeconds();
+			      mDraw();
+		    	  Thread.sleep(50);
+		      }
+		     
 		}catch(Exception e){
 			Log.e(TAG,"run error",e);
 		}
@@ -104,9 +135,9 @@ public class CountDownView extends SurfaceView implements Runnable, Callback,Con
 	public void canvas(Canvas mCanvas) {
 		//画圆,(x轴,y轴,半径,画笔)
 
-        int hours=12;
-        int minutes=36;
-        int seconds=24;
+        int hours=(int)curShowTimeSeconds / 3600;
+        int minutes=(int)(curShowTimeSeconds - hours * 3600)/60 ;
+        int seconds=(int)curShowTimeSeconds % 60;
         canvasDigit( MARGIN_LEFT , MARGIN_TOP , 	hours/10 , mCanvas );
         canvasDigit( MARGIN_LEFT + 15*(RADIUS+1) , MARGIN_TOP , hours%10 , mCanvas );
         canvasDigit( MARGIN_LEFT + 30*(RADIUS + 1) , MARGIN_TOP , 10 , mCanvas );
