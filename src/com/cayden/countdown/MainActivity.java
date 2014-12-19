@@ -6,7 +6,7 @@ import android.view.Menu;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.cayden.countdown.view.MySurfaceView;
+import com.cayden.countdown.view.CountDownView;
 
 public class MainActivity extends Activity {
 
@@ -21,7 +21,7 @@ public class MainActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         // 设置布局
-        setContentView(new MySurfaceView(this));
+        setContentView(new CountDownView(this));
 	}
 
 	@Override
