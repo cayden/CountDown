@@ -5,10 +5,20 @@
  */
 package com.cayden.countdown.view;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import com.cayden.countdown.Constants;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
 import android.view.SurfaceView;
@@ -18,14 +28,19 @@ import android.view.SurfaceView;
  * @author cuiran
  * @version 1.0.0
  */
-public class CountDownView extends SurfaceView implements Runnable, Callback {
-
+public class CountDownView extends SurfaceView implements Runnable, Callback,Constants {
+	private static final String TAG="CountDownView";
 	private SurfaceHolder mHolder;    //用于控制SurfaceView
 	private Canvas mCanvas;    //声明画布
 	private Paint mPaint;    //声明画笔
-    private int mX, mY;    //用于控制图形的坐标
     
     private Thread mThread;    //声明一个线程
+
+    private static final int RADIUS=10;	//声明小球半径
+    private static final int MARGIN_TOP = 60;
+    private static final int MARGIN_LEFT = 30;
+    private ArrayList<int[][]> list=new ArrayList<int[][]>();
+   
 
 	public CountDownView(Context context) {
 		super(context);
@@ -34,10 +49,18 @@ public class CountDownView extends SurfaceView implements Runnable, Callback {
 	      mPaint = new Paint();    			//创建一个画笔对象
 	      mPaint.setColor(Color.BLUE);   	//设置画笔的颜色
 
-	      //设置坐标为50,100
-	      mX = 50;
-	      mY = 100;
-
+	
+	      list.add(data0);
+	      list.add(data1);
+	      list.add(data2);
+	      list.add(data3);
+	      list.add(data4);
+	      list.add(data5);
+	      list.add(data6);
+	      list.add(data7);
+	      list.add(data8);
+	      list.add(data9);
+	      list.add(data10);
 	}
 
 	@Override
@@ -57,11 +80,15 @@ public class CountDownView extends SurfaceView implements Runnable, Callback {
 		
 	}
 
-	
 	@Override
 	public void run() {
+		try{
+			mDraw();
+		}catch(Exception e){
+			Log.e(TAG,"run error",e);
+		}
 		
-		mDraw();
+		
 	}
 	
 	/**
@@ -78,6 +105,37 @@ public class CountDownView extends SurfaceView implements Runnable, Callback {
 
 	public void canvas(Canvas mCanvas) {
 		//画圆,(x轴,y轴,半径,画笔)
-        mCanvas.drawCircle(mX + 10, mY + 60, 10, mPaint);
+
+        int hours=12;
+        int minutes=36;
+        int seconds=24;
+        canvasDigit( MARGIN_LEFT , MARGIN_TOP , 	hours/10 , mCanvas );
+        canvasDigit( MARGIN_LEFT + 15*(RADIUS+1) , MARGIN_TOP , hours%10 , mCanvas );
+        canvasDigit( MARGIN_LEFT + 30*(RADIUS + 1) , MARGIN_TOP , 10 , mCanvas );
+        canvasDigit( MARGIN_LEFT + 39*(RADIUS+1) , MARGIN_TOP , minutes/10 , mCanvas);
+        canvasDigit( MARGIN_LEFT + 54*(RADIUS+1) , MARGIN_TOP , minutes%10 , mCanvas);
+        canvasDigit( MARGIN_LEFT + 69*(RADIUS+1) , MARGIN_TOP , 10 , mCanvas);
+        canvasDigit( MARGIN_LEFT + 78*(RADIUS+1) , MARGIN_TOP , seconds/10 , mCanvas);
+        canvasDigit( MARGIN_LEFT + 93*(RADIUS+1) , MARGIN_TOP , seconds%10 , mCanvas);
 	}
+	
+	
+	public void canvasDigit(int x,int y,int num,Canvas mCanvas) {
+		int [][] data=list.get(num);
+		for(int i=0;i<data.length;i++){
+			
+			for(int j=0;j<data[i].length;j++){
+				
+				if(data[i][j]==1){
+					
+					mCanvas.drawCircle(x + j*2*(RADIUS+1)+(RADIUS+1), y + i*2*(RADIUS+1)+(RADIUS+1), RADIUS, mPaint);
+					 
+				}
+				
+			}
+			
+		}
+	}
+	
+	
 }
