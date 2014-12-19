@@ -131,6 +131,7 @@ public class CountDownView extends SurfaceView implements Runnable, Callback,Con
 		 canvas(mCanvas);
 		 mHolder.unlockCanvasAndPost(mCanvas);       //把画布显示在屏幕上
 	}
+	
 
 	public void canvas(Canvas mCanvas) {
 		//画圆,(x轴,y轴,半径,画笔)
@@ -138,6 +139,7 @@ public class CountDownView extends SurfaceView implements Runnable, Callback,Con
         int hours=(int)curShowTimeSeconds / 3600;
         int minutes=(int)(curShowTimeSeconds - hours * 3600)/60 ;
         int seconds=(int)curShowTimeSeconds % 60;
+        
         canvasDigit( MARGIN_LEFT , MARGIN_TOP , 	hours/10 , mCanvas );
         canvasDigit( MARGIN_LEFT + 15*(RADIUS+1) , MARGIN_TOP , hours%10 , mCanvas );
         canvasDigit( MARGIN_LEFT + 30*(RADIUS + 1) , MARGIN_TOP , 10 , mCanvas );
